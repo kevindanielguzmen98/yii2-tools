@@ -13,5 +13,10 @@
     "require": {},
     "require-dev": {
         "symfony/var-dumper": "^4.3@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "kevocode\\tools\\": ""
+        }
     }
 }
