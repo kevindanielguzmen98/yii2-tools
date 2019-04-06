@@ -1,7 +1,7 @@
 {
     "name": "kevocode/yii2-tools",
     "description": "Modelos, controladores, acciones y utilizadades varias para proyectos realizado en Yii2.",
-    "type": "yii2-library, component",
+    "type": "library",
     "license": "BSD-3",
     "authors": [
         {
