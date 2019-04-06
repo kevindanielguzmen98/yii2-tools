@@ -21,7 +21,7 @@ use yii\filters\auth\HttpBearerAuth;
  */
 trait ApiAuthentication
 {
-    private $aditionAuthMethods = [];
+    private $authMethods = [];
 
     /**
      * Configuración de comportamientos para el modelo.
@@ -31,20 +31,24 @@ trait ApiAuthentication
     public function behaviors()
     {
         $behaviors = parent::behaviors();
+        $authMethods = [
+            [
+                'class' => '\yii\filters\auth\HttpBasicAuth',
+                'auth' => function ($username, $password) {
+                    $user = Yii::$app->user->identityClass::findByUsername($username);
+                    if ($user && $user->validatePassword($password)) {
+                        return $user;
+                    }
+                }
+            ],
+            HttpBearerAuth::className(),
+        ];
+        if (!empty($this->authMethods)) {
+            $authMethods = $this->authMethods;
+        }
         $behaviors['authenticator'] = [
             'class' => CompositeAuth::className(),
-            'authMethods' => [
-                [
-                    'class' => '\yii\filters\auth\HttpBasicAuth',
-                    'auth' => function ($username, $password) {
-                        $user = Yii::$app->user->identityClass::findByUsername($username);
-                        if ($user && $user->validatePassword($password)) {
-                            return $user;
-                        }
-                    }
-                ],
-                HttpBearerAuth::className(),
-            ],
+            'authMethods' => $authMethods,
         ];
         return $behaviors;
     }
