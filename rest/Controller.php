@@ -4,9 +4,6 @@ namespace kevocode\tools\rest;
 
 use Yii;
 use yii\rest\ActiveController;
-use yii\filters\auth\CompositeAuth;
-use yii\filters\auth\HttpBasicAuth;
-use yii\filters\auth\HttpBearerAuth;
 use yii\web\Response;
 use yii\base\InvalidConfigException;
 
@@ -48,13 +45,6 @@ class Controller extends ActiveController
     {
         $behaviors = parent::behaviors();
         $behaviors['contentNegotiator']['formats']['application/json'] = Response::FORMAT_JSON;
-        $behaviors['authenticator'] = [
-            'class' => CompositeAuth::className(),
-            'authMethods' => [
-                HttpBasicAuth::className(),
-                HttpBearerAuth::className(),
-            ],
-        ];
         return $behaviors;
     }
 
