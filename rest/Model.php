@@ -22,8 +22,6 @@ use kevocode\tools\commons\traits\ManagementAdmColumns;
  */
 class Model extends \yii\db\ActiveRecord
 {
-    use ManagementAdmColumns;
-
     const CREATED_AT_COLUMN = 'created_at';
     const UPDATED_AT_COLUMN = 'updated_at';
     const CREATED_BY_COLUMN = 'created_by';

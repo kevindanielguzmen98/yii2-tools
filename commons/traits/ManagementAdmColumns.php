@@ -12,7 +12,7 @@ use yii\db\Expression;
  * @property boolean $useAdminColumns Define si se usarán o no 
  * los comportamientos para las columnas de administración.
  * 
- * @package app
+ * @package kevocode
  * @subpackage tools\commons\traits
  * @category traits
  * 
@@ -20,7 +20,8 @@ use yii\db\Expression;
  * @version 0.0.1
  * @since 0.0.0
  */
-trait ManagementAdmColumns {
+trait ManagementAdmColumns
+{
     public $useAdminColumns = true;
     
     /**
