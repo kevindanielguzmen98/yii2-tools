@@ -85,4 +85,44 @@ class User extends \mdm\admin\models\User
             static::STATUS_COLUMN => static::STATUS_ACTIVE,
         ]);
     }
+
+    /**
+     * Búsca el usuario por token de acceso
+     * 
+     * @return User
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        if (!empty($token)) {
+            return self::findOne([
+                'token' => $token,
+                self::STATUS_COLUMN => self::STATUS_ACTIVE
+            ]);
+        }
+    }
+
+    /**
+     * Asigna un token de acceso al usuario.
+     * 
+     * @return boolean
+     */
+    public function setAccessToken()
+    {
+        $this->token = static::generateAccessToken();
+        return $this->save(false);
+    }
+
+    /**
+     * Genera un token de accesos único.
+     * 
+     * @return string
+     */
+    public static function generateAccessToken()
+    {
+        $token = Yii::$app->security->generateRandomString(34);
+        while (!is_null(self::findOne([ 'token' => $token ]))) {
+            $token = Yii::$app->security->generateRandomString(34);
+        }
+        return $token;
+    }
 }

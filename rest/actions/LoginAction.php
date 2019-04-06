@@ -1,0 +1,67 @@
+<?php
+
+namespace kevocode\tools\rest\actions;
+
+use Yii;
+use kevocode\tools\commons\DynamicModel;
+
+/**
+ * Acción para realizar un login normal por nombre de usuario y contraseña.
+ *
+ * @package kevocode
+ * @subpackage tools\rest\actions
+ * @category actions
+ *
+ * @author Kevin Daniel Guzman Delgadillo <kevindanielguzmen98@gmail.com>
+ * @version 0.0.1
+ * @since 0.0.0
+ */
+class LoginAction extends \yii\base\Action
+{
+    /**
+     * Evento para la validación del acceso.
+     */
+    public $checkAccess;
+
+    /**
+     * Función para correr la acción
+     */
+    public function run()
+    {
+        if ($this->checkAccess) {
+            call_user_func($this->checkAccess, $this->id);
+        }
+        $model = $this->getDynamicModel();
+        if ($model->validate()) {
+            $user = Yii::$app->user->identityClass::findByUsername($model->username);
+            if (!$user->validatePassword($model->password)) {
+                $model->addError('password', Yii::t('app', 'Password is incorrect'));
+            } else {
+                $user->setAccessToken();
+                $model = $user;
+            }
+        }
+        return $model;
+    }
+
+    /**
+     * Define el modélo dinámico para la autenticación normal.
+     * 
+     * @return DynamicModel
+     */
+    private function getDynamicModel()
+    {
+        $request = Yii::$app->request;
+        $rules = [
+            [['username', 'password'], 'required'],
+            [['username'], 'exist', 'targetClass' => Yii::$app->user->identityClass, 'targetAttribute' => 'username', 'filter' => function ($query) {
+                $query->andWhere([Yii::$app->user->identityClass::STATUS_COLUMN => Yii::$app->user->identityClass::STATUS_ACTIVE]);
+                return $query;
+            }, 'message' => Yii::t('app', 'There is not user with this username or is inactive.')]
+        ];
+        return DynamicModel::withRules([
+            'username' => $request->post('username'),
+            'password' => $request->post('password')
+        ], $rules);
+    }
+}
