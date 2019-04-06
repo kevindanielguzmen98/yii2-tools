@@ -1,0 +1,17 @@
+{
+    "name": "kevocode/yii2-tools",
+    "description": "Modelos, controladores, acciones y utilizadades varias para proyectos realizado en Yii2.",
+    "type": "yii2-library, component",
+    "license": "BSD-3",
+    "authors": [
+        {
+            "name": "Kevin Guzman",
+            "email": "kevindanielguzmen98@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "require-dev": {
+        "symfony/var-dumper": "^4.3@dev"
+    }
+}
