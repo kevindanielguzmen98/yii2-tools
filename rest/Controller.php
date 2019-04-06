@@ -23,6 +23,10 @@ use yii\base\InvalidConfigException;
 class Controller extends ActiveController
 {
     public $searchModel = null;
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
+    ];
 
     /**
      * Definición de evento inicializador del controlador.
