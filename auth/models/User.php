@@ -1,6 +1,6 @@
 <?php
 
-namespace kevocode\tools\auth;
+namespace kevocode\tools\auth\models;
 
 use Yii;
 
@@ -8,7 +8,7 @@ use Yii;
  * User provee todas las funciones necesarias para la autenticación de usuarios y su administración.
  *
  * @package kevocode
- * @subpackage tools\auth
+ * @subpackage tools\auth\models
  * @category models
  *
  * @author Kevin Daniel Guzman Delgadillo <kevindanielguzmen98@gmail.com>
