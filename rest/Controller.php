@@ -59,6 +59,11 @@ class Controller extends ActiveController
         $actions['index']['prepareDataProvider'] = [
             $this, 'getDataProvider'
         ];
+        $actions['delete'] = [
+            'class' => 'kevocode\tools\rest\actions\DeleteAction',
+            'modelClass' => $this->modelClass,
+            'checkAccess' => [$this, 'checkAccess'],
+        ];
         return $actions;
     }
 
