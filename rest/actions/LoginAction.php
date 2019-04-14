@@ -4,6 +4,7 @@ namespace kevocode\tools\rest\actions;
 
 use Yii;
 use kevocode\tools\commons\DynamicModel;
+use yii\base\InvalidConfigException;
 
 /**
  * Acción para realizar un login normal por nombre de usuario y contraseña.
@@ -24,6 +25,25 @@ class LoginAction extends \yii\base\Action
     public $checkAccess;
 
     /**
+     * Definición de modelo de usuario para validación de inicio de sesión.
+     * 
+     * @var string
+     */
+    public $userClass = null;
+
+    /**
+     * Sobreestricuta de método inicializador.
+     * 
+     */
+    public function init()
+    {
+        parent::init();
+        if (is_null($this->userClass)) {
+            $this->userClass = Yii::$app->user->identityClass;
+        }
+    }
+
+    /**
      * Función para correr la acción
      */
     public function run()
@@ -33,7 +53,7 @@ class LoginAction extends \yii\base\Action
         }
         $model = $this->getDynamicModel();
         if ($model->validate()) {
-            $user = Yii::$app->user->identityClass::findByUsername($model->username);
+            $user = $this->userClass::findByUsername($model->username);
             if (!$user->validatePassword($model->password)) {
                 $model->addError('password', Yii::t('app', 'Password is incorrect'));
             } else {
@@ -54,8 +74,8 @@ class LoginAction extends \yii\base\Action
         $request = Yii::$app->request;
         $rules = [
             [['username', 'password'], 'required'],
-            [['username'], 'exist', 'targetClass' => Yii::$app->user->identityClass, 'targetAttribute' => 'username', 'filter' => function ($query) {
-                $query->andWhere([Yii::$app->user->identityClass::STATUS_COLUMN => Yii::$app->user->identityClass::STATUS_ACTIVE]);
+            [['username'], 'exist', 'targetClass' => $this->userClass, 'targetAttribute' => 'username', 'filter' => function ($query) {
+                $query->andWhere([$this->userClass::STATUS_COLUMN => $this->userClass::STATUS_ACTIVE]);
                 return $query;
             }, 'message' => Yii::t('app', 'There is not user with this username or is inactive.')]
         ];
