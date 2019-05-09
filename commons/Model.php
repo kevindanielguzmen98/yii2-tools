@@ -17,6 +17,24 @@ use Yii;
  */
 class Model extends \yii\db\ActiveRecord
 {
+    const CREATED_AT_COLUMN = 'created_at';
+    const UPDATED_AT_COLUMN = 'updated_at';
+    const CREATED_BY_COLUMN = 'created_by';
+    const UPDATED_BY_COLUMN = 'updated_by';
+    const STATUS_COLUMN = 'record_status';
+    const STATUS_ACTIVE = 'A';
+    const STATUS_INACTIVE = 'I';
+    const APPLICATION_USER_ID = 1;
+
+    /**
+     * Definición de evento de inicialización del modelo
+     */
+    public function init()
+    {
+        parent::init();
+        $this->{static::STATUS_COLUMN} = static::STATUS_ACTIVE;
+    }
+
     /**
      * Define las columnas que serán mostradas en el admin por defecto
      * 
