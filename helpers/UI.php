@@ -6,6 +6,7 @@ use yii\helpers\Inflector;
 use kartik\dynagrid\DynaGrid;
 use yii\helpers\ArrayHelper;
 use kartik\grid\GridView;
+use yii\helpers\Html;
 
 /**
  * Extención de funcionalidad de helper Html de yii para dar elementos comunes en los proyectos.
@@ -59,8 +60,8 @@ class UI extends \yii\helpers\Html
      *     'items' => [],
      *     'options' => [],
      *     'fieldOptions' => [],
-     *     'widgetClass' => null,
-     *     'widgetOptions' => []
+     *     'widget' => [],
+     *     'containerOptions' => [] // Opciones para el contenedor esto puede ser la clase de las columnas
      * ]
      * ```
      * 
@@ -71,18 +72,15 @@ class UI extends \yii\helpers\Html
      */
     public static function renderField($form, $model, $options = [])
     {
-        $field = "";
+        $field = null;
         if (!is_array($options)) {
             $options = ['name' => $options];
         }
-        if (!isset($options['options'])) {
-            $options['options'] = [];
-        }
-        if (isset($options['widgetClass']) && !empty($options['widgetClass'])) {
-            $widgetOptions = (isset($options['widgetOptions']) && !empty($options['widgetOptions'])) ? $options['widgetOptions'] : [];
-            $field = $form->field($model, $options['name'], $options['options'])->widget($widgetOptions['widgetClass'], $widgetOptions);
+        $options['options'] = ArrayHelper::getValue($options, 'options', []);
+        $field = $form->field($model, $options['name'], $options['options']);
+        if (isset($options['widget']) && !empty($options['widget'])) {
+            $field = call_user_func_array([$field, 'widget'], $options['widget']);
         } else {
-            $field = $form->field($model, $options['name'], $options['options']);
             if (isset($options['type']) && !empty($options['type'])) {
                 $field = call_user_func_array([$field, $options['type']], $options['fieldOptions']);
             }
@@ -90,7 +88,8 @@ class UI extends \yii\helpers\Html
                 $field->label($options['label']);
             }
         }
-        return $field;
+        $options['containerOptions'] = ArrayHelper::getValue($options, 'containerOptions', []);
+        return Html::tag('div', $field, $options['containerOptions']);
     }
 
     /**
