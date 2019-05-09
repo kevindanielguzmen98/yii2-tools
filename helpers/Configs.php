@@ -3,6 +3,7 @@
 namespace kevocode\tools\helpers;
 
 use Yii;
+use kartik\grid\GridView;
 
 /**
  * Configuraciones globales para el sistema, entre widgets, columnas y otros.
@@ -22,17 +23,19 @@ class Configs
      */
     public static function defineDefaultWidgetConfig()
     {
-        Yii::$container->set(\yii\grid\GridView::class, self::getConfigGridView());
+        // Yii::$container->set(\yii\grid\GridView::class, self::getConfigGridView());
+        Yii::$container->set(\kartik\dynagrid\DynaGrid::class, self::getConfigDynagrid());
     }
 
     /**
-     * Define la configuración por defecto para el widget de GridView
+     * Define la configuración por defecto para el widget de Dynagrid
      * 
      * @return array
      */
-    public static function getConfigGridView()
+    public static function getConfigDynagrid()
     {
         return [
+            'options' => []
         ];
     }
 }
