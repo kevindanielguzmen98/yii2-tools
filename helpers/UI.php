@@ -103,17 +103,23 @@ class UI extends \yii\helpers\Html
     public static function dynagridComponent($title = 'any', $config = [])
     {
         $id = Inflector::slug($title);
-        $config = ArrayHelper::merge([
+        $config['columns'] = ArrayHelper::merge($config['columns'], [
+            [
+                'class' => \app\components\ActionColumn::class,
+                'template' => '{update} {delete} {restore}'
+            ]
+        ]);
+        $config = ArrayHelper::merge($config, [
             'gridOptions' => [
                 'id' => 'grid-'. $id,
                 'pjax' => true,
                 'toolbar' =>  [
                     [
                         'content' =>
-                            UI::buttonIcon('', 'fas fa-plus', [
+                            UI::a(UI::icon('fas fa-plus'), ['create'], [
                                 'class' => 'btn btn-success',
                                 'title' => Yii::t('app', 'Create'),
-                                'onclick' => 'alert("This will launch the book creation form.\n\nDisabled for this demo!");'
+                                'data' => ['pjax' => 0]
                             ])
                             . UI::buttonIcon('', 'fas fa-search', [
                                 'class' => 'btn btn-primary',
@@ -142,7 +148,7 @@ class UI extends \yii\helpers\Html
             'options' => [
                 'id' => 'dynagrid-'. $id
             ]
-        ], $config);
+        ]);
         return DynaGrid::widget($config);
     }
 }

@@ -36,6 +36,26 @@ class Model extends \yii\db\ActiveRecord
     }
 
     /**
+     * Define la columna que se mostrará en los formularios para identificar el recurso
+     * 
+     * @return string
+     */
+    public static function columnInCrud()
+    {
+        return static::primaryKey();
+    }
+
+    /**
+     * Define el nombre que se mostrará en el CRUD.
+     * 
+     * @return string
+     */
+    public static function crudTitle()
+    {
+        return ucfirst(str_replace('_', ' ', static::tableName()));
+    }
+
+    /**
      * Define las columnas que serán mostradas en el admin por defecto
      * 
      * @return array
