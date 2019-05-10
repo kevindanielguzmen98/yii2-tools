@@ -18,12 +18,4 @@ use kevocode\tools\helpers\Configs;
  */
 class Controller extends \yii\web\Controller
 {
-    /**
-     * Evento inicializador de la clase
-     */
-    public function init()
-    {
-        parent::init();
-        Configs::defineDefaultWidgetConfig();
-    }
 }
