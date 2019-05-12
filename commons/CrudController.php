@@ -34,6 +34,13 @@ class CrudController extends \kevocode\tools\commons\Controller
     public $searchModel = null;
 
     /**
+     * Clase que deteminará con que UI se contruirá las vistas que lo necesiten
+     * 
+     * @var string
+     */
+    public $uiClass = \kevocode\tools\helpers\UI::class;
+
+    /**
      * Evento inicializador de la clase
      */
     public function init()

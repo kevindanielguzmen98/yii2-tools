@@ -1,8 +1,6 @@
 <?php
 
 use yii\widgets\ActiveForm;
-use app\helpers\UI;
-use yii\helpers\Inflector;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\search\Categories */
@@ -17,7 +15,7 @@ use yii\helpers\Inflector;
     ]); ?>
         <div class="row">
             <?php foreach ($model->formColumns() as $column): ?>
-                <?= UI::renderField($form, $model, $column) ?>
+                <?= Yii::$app->controller->uiClass::renderField($form, $model, $column) ?>
             <?php endforeach; ?>
         </div>
     <?php ActiveForm::end(); ?>

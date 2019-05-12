@@ -15,7 +15,7 @@ $id = Inflector::slug($this->title);
 ?>
 <div id="<?= $id ?>-container" class="row">
     <div class="col-12 grid-margin">
-        <?= UI::dynagridComponent($this->title, [
+        <?= Yii::$app->controller->uiClass::dynagridComponent($this->title, [
             'columns' => $searchModel::gridColumns(),
             'gridOptions' => [
                 'dataProvider' => $dataProvider,
