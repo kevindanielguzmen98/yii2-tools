@@ -38,4 +38,18 @@ class Configs
             'options' => []
         ];
     }
+
+    /**
+     * Retorna arreglo con los estados de los registros
+     * 
+     * @param $model Instancia del modelo
+     * @return array
+     */
+    public static function getStatusStates($model)
+    {
+        return [
+            $model::STATUS_ACTIVE => Yii::t('app', 'Active'),
+            $model::STATUS_INACTIVE => Yii::t('app', 'Inactive')
+        ];
+    }
 }

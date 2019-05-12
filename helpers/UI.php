@@ -103,12 +103,10 @@ class UI extends \yii\helpers\Html
     public static function dynagridComponent($title = 'any', $config = [])
     {
         $id = Inflector::slug($title);
-        $config['columns'] = ArrayHelper::merge($config['columns'], [
-            [
-                'class' => \app\components\ActionColumn::class,
-                'template' => '{update} {delete} {restore}'
-            ]
-        ]);
+        $config['columns'] = ArrayHelper::merge(
+            $config['columns'],
+            static::getCommonGridColumns($config['gridOptions']['filterModel'])
+        );
         $config = ArrayHelper::merge($config, [
             'gridOptions' => [
                 'id' => 'grid-'. $id,
@@ -150,5 +148,90 @@ class UI extends \yii\helpers\Html
             ]
         ]);
         return DynaGrid::widget($config);
+    }
+
+    /**
+     * Devuelve un arreglo con las columnas comúnes que son necesarias en los grid
+     * 
+     * @return array
+     */
+    public static function getCommonGridColumns($model)
+    {
+        $userList = Yii::$app->user->identityClass::findAll([
+            Yii::$app->user->identityClass::STATUS_COLUMN => Yii::$app->user->identityClass::STATUS_ACTIVE
+        ]);
+        return [
+            [
+                'attribute' => $model::STATUS_COLUMN,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' => Configs::getStatusStates($model),
+                'filterWidgetOptions' => [
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ]
+                ],
+                'filterInputOptions' => ['placeholder' => Yii::t('app', 'Empty'), 'id' => 'grid-' . $model::STATUS_COLUMN]
+            ],
+            [
+                'attribute' => $model::CREATED_BY_COLUMN,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' => ArrayHelper::map($userList, Yii::$app->user->identityClass::primaryKey(), 'username'),
+                'value' => function ($model) use ($userList) {
+                    foreach ($userList as $user) {
+                        if ($model->{$model::CREATED_BY_COLUMN} == $user->{$user::primaryKey()[0]}) {
+                            return $user->username;
+                        }
+                    }
+                },
+                'filterWidgetOptions' => [
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ]
+                ],
+                'filterInputOptions' => ['placeholder' => Yii::t('app', 'Empty'), 'id' => 'grid-' . $model::CREATED_BY_COLUMN],
+                'visible' => false
+            ],
+            [
+                'attribute' => $model::CREATED_AT_COLUMN,
+                'filterType' => GridView::FILTER_DATETIME,
+                'format' => 'datetime',
+                'filterInputOptions' => [
+                    'id' => 'grid-' . $model::CREATED_AT_COLUMN 
+                ],
+                'visible' => false
+            ],
+            [
+                'attribute' => $model::UPDATED_BY_COLUMN,
+                'filterType' => GridView::FILTER_SELECT2,
+                'filter' => ArrayHelper::map($userList, Yii::$app->user->identityClass::primaryKey(), 'username'),
+                'value' => function ($model) use ($userList) {
+                    foreach ($userList as $user) {
+                        if ($model->{$model::UPDATED_BY_COLUMN} == $user->{$user::primaryKey()[0]}) {
+                            return $user->username;
+                        }
+                    }
+                },
+                'filterWidgetOptions' => [
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ]
+                ],
+                'filterInputOptions' => ['placeholder' => Yii::t('app', 'Empty'), 'id' => 'grid-' . $model::UPDATED_BY_COLUMN],
+                'visible' => false
+            ],
+            [
+                'attribute' => $model::UPDATED_AT_COLUMN,
+                'filterType' => GridView::FILTER_DATETIME,
+                'format' => 'datetime',
+                'filterInputOptions' => [
+                    'id' => 'grid-' . $model::UPDATED_AT_COLUMN
+                ],
+                'visible' => false
+            ],
+            [
+                'class' => \app\components\ActionColumn::class,
+                'template' => '{update} {delete} {restore}'
+            ]
+        ];
     }
 }

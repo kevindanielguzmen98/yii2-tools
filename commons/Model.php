@@ -3,6 +3,9 @@
 namespace kevocode\tools\commons;
 
 use Yii;
+use kartik\grid\GridView;
+use kevocode\tools\helpers\Configs;
+use app\helpers\ArrayHelper;
 
 /**
  * Extención de funcionalidad para modelo tipo ActiveRecord.
@@ -27,12 +30,19 @@ class Model extends \yii\db\ActiveRecord
     const APPLICATION_USER_ID = 1;
 
     /**
+     * Determina si se utilizarán las columnas de estado
+     */
+    public $useStatusColumn = true;
+
+    /**
      * Definición de evento de inicialización del modelo
      */
     public function init()
     {
         parent::init();
-        $this->{static::STATUS_COLUMN} = static::STATUS_ACTIVE;
+        if ($this->useStatusColumn) {
+            $this->{static::STATUS_COLUMN} = static::STATUS_ACTIVE;
+        }
     }
 
     /**
@@ -42,7 +52,7 @@ class Model extends \yii\db\ActiveRecord
      */
     public static function columnInCrud()
     {
-        return static::primaryKey();
+        return static::primaryKey()[0];
     }
 
     /**
@@ -63,7 +73,10 @@ class Model extends \yii\db\ActiveRecord
     public static function gridColumns()
     {
         $instance = new static;
-        return $instance->attributes();
+        return array_filter($instance->attributes(), function ($value) {
+            $commonColumns = [static::STATUS_COLUMN, static::CREATED_AT_COLUMN, static::CREATED_BY_COLUMN, static::UPDATED_AT_COLUMN, static::UPDATED_BY_COLUMN];
+            return !in_array($value, $commonColumns);
+        });
     }
 
     /**
@@ -74,6 +87,13 @@ class Model extends \yii\db\ActiveRecord
     public static function formColumns()
     {
         $instance = new static;
-        return $instance->attributes();
-    }    
+        return array_map(function ($value) use ($instance) {
+            $inSearch = [$instance::primaryKey()[0], $instance::STATUS_COLUMN, $instance::CREATED_AT_COLUMN, $instance::CREATED_BY_COLUMN, $instance::UPDATED_AT_COLUMN, $instance::UPDATED_BY_COLUMN];
+            return [
+                'name' => $value,
+                'containerOptions' => ['class' => 'col-12 col-md-6'],
+                'onlyInSearch' => in_array($value, $inSearch)
+            ];
+        }, $instance->attributes());
+    }
 }
