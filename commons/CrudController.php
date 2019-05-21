@@ -5,6 +5,8 @@ namespace kevocode\tools\commons;
 use Yii;
 use kevocode\tools\helpers\Configs;
 use yii\filters\VerbFilter;
+use yii\web\View;
+use yii\helpers\ArrayHelper;
 
 /**
  * Extención de funcionalidad de controladores para que se realice acciones de un CRUD básico.
@@ -47,6 +49,7 @@ class CrudController extends \kevocode\tools\commons\Controller
     {
         parent::init();
         Configs::defineDefaultWidgetConfig();
+        $this->getView()->on(View::EVENT_AFTER_RENDER, [$this, 'onAfterRender']);
     }
 
     /**
@@ -102,5 +105,17 @@ class CrudController extends \kevocode\tools\commons\Controller
             return $model;
         }
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    /**
+     * Evento manejador para antes de renderizar.
+     * 
+     * @param 
+     */
+    public function onAfterRender($event) {
+        $event->sender->params['breadcrumbs'] = array_merge([
+            ['label' => 'Configurations', 'url' => '#']
+        ], $event->sender->params['breadcrumbs']);
+        $this->getView()->off(View::EVENT_AFTER_RENDER, [$this, 'onAfterRender']);
     }
 }
