@@ -34,6 +34,6 @@ trait UrlColumnFile
         if (!empty($uriFileDefault) && !file_exists($path)) {
             $uri = $uriFileDefault;
         }
-        return Url::toRoute('@web/'. $uri);
+        return Url::to('@web/'. $uri, true);
     }
 }
