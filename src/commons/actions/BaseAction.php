@@ -22,7 +22,7 @@ class BaseAction extends \yii\base\Action
      * 
      * @var string
      */
-    public $baseViewPath = '@vendor/kevocode/yii2-tools/commons/crud-views';
+    public $baseViewPath = '@vendor/kevocode/yii2-tools/src/commons/crud-views';
 
     /**
      * Evento para la validación del acceso.

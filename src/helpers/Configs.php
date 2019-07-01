@@ -23,7 +23,6 @@ class Configs
      */
     public static function defineDefaultWidgetConfig()
     {
-        // Yii::$container->set(\yii\grid\GridView::class, self::getConfigGridView());
         Yii::$container->set(\kartik\dynagrid\DynaGrid::class, self::getConfigDynagrid());
     }
 
@@ -51,5 +50,57 @@ class Configs
             $model::STATUS_ACTIVE => Yii::t('app', 'Active'),
             $model::STATUS_INACTIVE => Yii::t('app', 'Inactive')
         ];
+    }
+
+    /**
+     * Retorna un arreglo de configuración para el controller map de la aplicación con todas las configuraciones
+     * necesarias para hacer funcionar los CRUD's
+     * 
+     * @param array $config Configuración para la creación del arreglo controllerMap:
+     * ```
+     * [
+     *     'controllerClass' => '' // Clase que será utilizada como clase base de los controladores
+     *     'nsModels' => '' // Espacio de nombres para los modelos base
+     *     'nsSearchModels' => '' // Espacio de nombres para los modelos de búsqueda
+     *     'tables' => [
+     *         'alias' => 'table_name' // Alias es como será la ruta del controlador y el nombre de la tabla que administrará como valor
+     *     ] || [
+     *         'table_name' // Solo el nombre de la tabla sin alias
+     *     ] || [
+     *         [
+     *             'table' => 'table_name',
+     *             'config' => [] // Aditional configuration for controller
+     *         ] 
+     *     ]
+     * ]
+     * ```
+     * @return array
+     */
+    public static function getControllerMap($config)
+    {
+        $controllerClass = $config['controllerClass'];
+        $nsModels = $config['nsModels'];
+        $nsSearchModels = $config['nsSearchModels'];
+        $tables = $config['tables'];
+        $controllerMap = [];
+        foreach ($tables as $key => $value) {
+            $alias = $key;
+            $tableName = $value;
+            $aditionalConfig = [];
+            if (is_int($key)) {
+                $alias = str_replace('_', '-', $value);
+            }
+            if (is_array($tableName)) {
+                $tableName = $tableName['table'];
+                $aditionalConfig = isset($tableName['config']) ? $tableName['config'] : [];
+            }
+            $modelName = str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', $tableName)));
+            $controllerMap[$alias] = array_merge([
+                'class' => $controllerClass,
+                'baseModel' => $nsModels . '\\' . $modelName,
+                'searchModel' => $nsSearchModels . '\\' . $modelName
+            ], $aditionalConfig);
+        }
+        return $controllerMap;
     }
 }
