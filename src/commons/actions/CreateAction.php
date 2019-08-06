@@ -33,7 +33,7 @@ class CreateAction extends BaseAction
             ]);
             return $this->controller->redirect(['index']);
         }
-        return $this->controller->render($this->getViewRoute('create'), [
+        return $this->render('create', [
             'model' => $model,
         ]);
     }       

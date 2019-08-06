@@ -20,16 +20,16 @@ class IndexAction extends BaseAction
 {
     /**
      * Evento de ejecución de la acción
-     * 
+     *
      * @return mixed
      */
     public function run()
     {
         $searchModel = new $this->controller->searchModel();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        return $this->controller->render($this->getViewRoute('index'), [
+        return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'dataProvider' => $dataProvider
         ]);
     }
 }

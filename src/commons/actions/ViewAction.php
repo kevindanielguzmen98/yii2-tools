@@ -24,7 +24,7 @@ class ViewActions extends BaseAction
      */
     public function run($id)
     {
-        return $this->controller->render($this->getViewRoute('view'), [
+        return $this->render('view', [
             'model' => $this->controller->findModel($id),
         ]);
     }    

@@ -33,7 +33,7 @@ class UpdateAction extends BaseAction
             ]);
             return $this->redirect(['index']);
         }
-        return $this->controller->render($this->getViewRoute('update'), [
+        return $this->render('update', [
             'model' => $model,
         ]);
     }       

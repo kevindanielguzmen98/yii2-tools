@@ -43,6 +43,17 @@ class BaseAction extends \yii\base\Action
     }
 
     /**
+     * Renderizado de vistas
+     * 
+     * @return mixed
+     */
+    public function render($view, $params = [])
+    {
+        $viewPath = $this->getViewRoute($view);
+        return $this->controller->render($viewPath, $params);
+    }
+
+    /**
      * Renderiza una vista validando que exista el archivo en las vistas de la aplicación,
      * si estas no existen renderiza las por defecto
      * 
