@@ -282,7 +282,32 @@ class UI extends \yii\helpers\Html
             [
                 'name' => $model::CREATED_AT_COLUMN,
                 'widget' => [
-                    'class' => \yii\jui\DatePicker::class
+                    'class' => \kartik\date\DatePicker::class
+                ],
+                'containerOptions' => ['class' => 'col-12 col-md-6'],
+                'in' => ['S']
+            ],
+            [
+                'name' => $model::UPDATED_BY_COLUMN,
+                'widget' => [
+                    'class' => \kartik\select2\Select2::class,
+                    [
+                        'data' => ArrayHelper::map($userList, Yii::$app->user->identityClass::primaryKey(), 'username'),
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                        'options' => [
+                            'placeholder' => Yii::t('app', 'Empty')
+                        ]
+                    ]
+                ],
+                'containerOptions' => ['class' => 'col-12 col-md-6'],
+                'in' => ['S']
+            ],
+            [
+                'name' => $model::UPDATED_AT_COLUMN,
+                'widget' => [
+                    'class' => \kartik\date\DatePicker::class
                 ],
                 'containerOptions' => ['class' => 'col-12 col-md-6'],
                 'in' => ['S']
