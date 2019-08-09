@@ -89,14 +89,11 @@ class Model extends \yii\db\ActiveRecord
         $instance = new static;
         return array_map(function ($value) use ($instance) {
             $inView = ['S'];
-            $audit = [$instance::primaryKey()[0], $instance::STATUS_COLUMN, $instance::CREATED_AT_COLUMN, $instance::CREATED_BY_COLUMN, $instance::UPDATED_AT_COLUMN, $instance::UPDATED_BY_COLUMN];
-            if (!in_array($value, $audit)) {
-                $inView = array_merge($inView, ['C', 'U']);
-            }
+            $auditColumns = [$instance::primaryKey()[0], $instance::STATUS_COLUMN, $instance::CREATED_AT_COLUMN, $instance::CREATED_BY_COLUMN, $instance::UPDATED_AT_COLUMN, $instance::UPDATED_BY_COLUMN];
             return [
                 'name' => $value,
                 'containerOptions' => ['class' => 'col-12 col-md-6'],
-                'in' => $inView
+                'in' => (!in_array($value, $auditColumns) ? ['C', 'U', 'S'] : [])
             ];
         }, $instance->attributes());
     }

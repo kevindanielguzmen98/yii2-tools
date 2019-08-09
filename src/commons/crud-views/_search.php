@@ -13,7 +13,7 @@ use yii\widgets\ActiveForm;
         'id' => 'search-form-' . $id
     ]); ?>
         <div class="row">
-            <?php foreach ($model->formColumns() as $column): ?>
+            <?php foreach (array_merge($model->formColumns(), Yii::$app->controller->uiClass::getCommonFormFields($model)) as $column): ?>
                 <?php if (in_array('S', $column['in'])): ?>
                     <?= Yii::$app->controller->uiClass::renderField($form, $model, $column) ?>
                 <?php endif; ?>

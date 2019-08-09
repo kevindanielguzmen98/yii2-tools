@@ -239,15 +239,53 @@ class UI extends \yii\helpers\Html
      * 
      * @return array
      */
-    public static function commonColumns()
+    public static function getCommonFormFields($model)
     {
+        $userList = Yii::$app->user->identityClass::findAll([
+            Yii::$app->user->identityClass::STATUS_COLUMN => Yii::$app->user->identityClass::STATUS_ACTIVE
+        ]);
         return [
-            'record_status' => [
+            [
                 'name' => 'record_status',
                 'widget' => [
                     'class' => \kartik\select2\Select2::class,
-                    ''
-                ]
+                    [
+                        'data' => Configs::getStatusStates($model),
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                        'options' => [
+                            'placeholder' => Yii::t('app', 'Empty')
+                        ]
+                    ]
+                ],
+                'containerOptions' => ['class' => 'col-12 col-md-6'],
+                'in' => ['S']
+            ],
+            [
+                'name' => $model::CREATED_BY_COLUMN,
+                'widget' => [
+                    'class' => \kartik\select2\Select2::class,
+                    [
+                        'data' => ArrayHelper::map($userList, Yii::$app->user->identityClass::primaryKey(), 'username'),
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                        'options' => [
+                            'placeholder' => Yii::t('app', 'Empty')
+                        ]
+                    ]
+                ],
+                'containerOptions' => ['class' => 'col-12 col-md-6'],
+                'in' => ['S']
+            ],
+            [
+                'name' => $model::CREATED_AT_COLUMN,
+                'widget' => [
+                    'class' => \yii\jui\DatePicker::class
+                ],
+                'containerOptions' => ['class' => 'col-12 col-md-6'],
+                'in' => ['S']
             ]
         ];
     }
