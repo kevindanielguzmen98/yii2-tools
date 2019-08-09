@@ -73,8 +73,8 @@ class Model extends \yii\db\ActiveRecord
     public static function gridColumns()
     {
         $instance = new static;
-        return array_filter($instance->attributes(), function ($value) {
-            $commonColumns = [static::STATUS_COLUMN, static::CREATED_AT_COLUMN, static::CREATED_BY_COLUMN, static::UPDATED_AT_COLUMN, static::UPDATED_BY_COLUMN];
+        return array_filter($instance->attributes(), function ($value) use ($instance) {
+            $commonColumns = [$instance::primaryKey()[0], static::STATUS_COLUMN, static::CREATED_AT_COLUMN, static::CREATED_BY_COLUMN, static::UPDATED_AT_COLUMN, static::UPDATED_BY_COLUMN];
             return !in_array($value, $commonColumns);
         });
     }
@@ -88,7 +88,6 @@ class Model extends \yii\db\ActiveRecord
     {
         $instance = new static;
         return array_map(function ($value) use ($instance) {
-            $inView = ['S'];
             $auditColumns = [$instance::primaryKey()[0], $instance::STATUS_COLUMN, $instance::CREATED_AT_COLUMN, $instance::CREATED_BY_COLUMN, $instance::UPDATED_AT_COLUMN, $instance::UPDATED_BY_COLUMN];
             return [
                 'name' => $value,

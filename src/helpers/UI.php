@@ -169,7 +169,8 @@ class UI extends \yii\helpers\Html
                         'allowClear' => true
                     ]
                 ],
-                'filterInputOptions' => ['placeholder' => Yii::t('app', 'Empty'), 'id' => 'grid-' . $model::STATUS_COLUMN]
+                'filterInputOptions' => ['placeholder' => Yii::t('app', 'Empty'), 'id' => 'grid-' . $model::STATUS_COLUMN],
+                'visible' => false
             ],
             [
                 'attribute' => $model::CREATED_BY_COLUMN,
