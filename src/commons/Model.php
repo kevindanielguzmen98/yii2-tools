@@ -62,7 +62,7 @@ class Model extends \yii\db\ActiveRecord
      */
     public static function crudTitle()
     {
-        return ucfirst(str_replace('_', ' ', static::tableName()));
+        return Yii::t('app', ucfirst(str_replace('_', ' ', static::tableName())));
     }
 
     /**
@@ -88,11 +88,15 @@ class Model extends \yii\db\ActiveRecord
     {
         $instance = new static;
         return array_map(function ($value) use ($instance) {
-            $inSearch = [$instance::primaryKey()[0], $instance::STATUS_COLUMN, $instance::CREATED_AT_COLUMN, $instance::CREATED_BY_COLUMN, $instance::UPDATED_AT_COLUMN, $instance::UPDATED_BY_COLUMN];
+            $inView = ['S'];
+            $audit = [$instance::primaryKey()[0], $instance::STATUS_COLUMN, $instance::CREATED_AT_COLUMN, $instance::CREATED_BY_COLUMN, $instance::UPDATED_AT_COLUMN, $instance::UPDATED_BY_COLUMN];
+            if (!in_array($value, $audit)) {
+                $inView = array_merge($inView, ['C', 'U']);
+            }
             return [
                 'name' => $value,
                 'containerOptions' => ['class' => 'col-12 col-md-6'],
-                'onlyInSearch' => in_array($value, $inSearch)
+                'in' => $inView
             ];
         }, $instance->attributes());
     }

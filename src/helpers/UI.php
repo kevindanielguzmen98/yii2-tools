@@ -100,9 +100,8 @@ class UI extends \yii\helpers\Html
      * @param array $config Configuraciones para dynagrid
      * @return string
      */
-    public static function dynagridComponent($title = 'any', $config = [])
+    public static function dynagridComponent($id, $title, $config = [])
     {
-        $id = Inflector::slug($title);
         $config['columns'] = ArrayHelper::merge(
             $config['columns'],
             static::getCommonGridColumns($config['gridOptions']['filterModel'])
@@ -231,6 +230,24 @@ class UI extends \yii\helpers\Html
             [
                 'class' => \app\components\ActionColumn::class,
                 'template' => '{update} {delete} {restore}'
+            ]
+        ];
+    }
+
+    /**
+     * Definición de columna comunes para renderizar
+     * 
+     * @return array
+     */
+    public static function commonColumns()
+    {
+        return [
+            'record_status' => [
+                'name' => 'record_status',
+                'widget' => [
+                    'class' => \kartik\select2\Select2::class,
+                    ''
+                ]
             ]
         ];
     }

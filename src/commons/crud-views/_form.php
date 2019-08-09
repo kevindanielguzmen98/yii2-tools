@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 ]); ?>
     <div class="row">
         <?php foreach ($model::formColumns() as $column): ?>
-            <?php if (!isset($column['onlyInSearch']) || (isset($column['onlyInSearch']) && !$column['onlyInSearch'])): ?>
+            <?php if (in_array($type, $column['in'])): ?>
                 <?= Yii::$app->controller->uiClass::renderField($form, $model, $column) ?>
             <?php endif; ?>
         <?php endforeach; ?>

@@ -114,7 +114,7 @@ class CrudController extends \kevocode\tools\commons\Controller
      */
     public function onAfterRender($event) {
         $event->sender->params['breadcrumbs'] = array_merge([
-            ['label' => 'Configurations', 'url' => '#']
+            ['label' => Yii::t('app', 'Configurations'), 'url' => '#']
         ], $event->sender->params['breadcrumbs']);
         $this->getView()->off(View::EVENT_AFTER_RENDER, [$this, 'onAfterRender']);
     }

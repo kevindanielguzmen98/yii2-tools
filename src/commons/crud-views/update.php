@@ -21,7 +21,8 @@ $id = Inflector::slug($model::crudTitle());
         </div>
         <?= $this->render('_form', [
             'model' => $model,
-            'id' => $id
+            'id' => $id,
+            'type' => 'U'
         ]) ?>
     </div>
 </div>

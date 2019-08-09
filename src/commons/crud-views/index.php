@@ -11,11 +11,11 @@ use yii\helpers\Html;
 
 $this->title = $searchModel::crudTitle();
 $this->params['breadcrumbs'][] = $this->title;
-$id = Inflector::slug($this->title);
+$id = Inflector::camel2id($searchModel::tableName());
 ?>
 <div id="<?= $id ?>-container" class="row">
     <div class="col-12 grid-margin">
-        <?= Yii::$app->controller->uiClass::dynagridComponent($this->title, [
+        <?= Yii::$app->controller->uiClass::dynagridComponent($id, $this->title, [
             'columns' => $searchModel::gridColumns(),
             'gridOptions' => [
                 'dataProvider' => $dataProvider,
@@ -26,7 +26,7 @@ $id = Inflector::slug($this->title);
 </div>
 <?php Modal::begin([
     'id' => 'search-modal-' . $id,
-    'title' => 'Advanced search for '. strtolower($this->title),
+    'title' => Yii::t('app', 'Advanced search'),
     'size' => Modal::SIZE_DEFAULT,
     'footer' => Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary', 'form' => 'search-form-' . $id])
         . Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-outline-secondary', 'form' => 'search-form-' . $id])
