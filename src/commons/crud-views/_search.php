@@ -1,10 +1,10 @@
 <?php
 
-use yii\widgets\ActiveForm;
+use kevocode\tools\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\search\Categories */
-/* @var $form yii\widgets\ActiveForm */
+/* @var $form kevocode\tools\widgets\ActiveForm */
 ?>
 <div class="<?= $id ?>-search">
     <?php $form = ActiveForm::begin([

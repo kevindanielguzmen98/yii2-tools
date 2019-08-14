@@ -92,8 +92,24 @@ class Model extends \yii\db\ActiveRecord
             return [
                 'name' => $value,
                 'containerOptions' => ['class' => 'col-12 col-md-6'],
-                'in' => (!in_array($value, $auditColumns) ? ['C', 'U', 'S'] : [])
+                'in' => (!in_array($value, $auditColumns) ? ['C', 'U', 'S'] : []),
+                'options' => ['help' => '', 'popover' => $instance->getHelp($value)]
             ];
         }, $instance->attributes());
+    }
+
+    /**
+     * Retorna las ayudas para los formularios
+     * 
+     * @param string $columnName
+     * @return string
+     */
+    public function getHelp($columnName)
+    {
+        $helps = [];
+        foreach ($this->attributes() as $value) {
+            $helps[$value] = Yii::t('app', ucwords(str_replace('_', ' ', $value)));
+        }
+        return isset($helps[$columnName]) ? $helps[$columnName] : null;
     }
 }

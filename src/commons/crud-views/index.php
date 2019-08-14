@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $id = Inflector::camel2id($searchModel::tableName());
 ?>
 <div id="<?= $id ?>-container" class="row">
-    <div class="col-12 grid-margin">
+    <div class="col-12">
         <?= Yii::$app->controller->uiClass::dynagridComponent($id, $this->title, [
             'columns' => $searchModel::gridColumns(),
             'gridOptions' => [
@@ -28,8 +28,11 @@ $id = Inflector::camel2id($searchModel::tableName());
     'id' => 'search-modal-' . $id,
     'title' => Yii::t('app', 'Advanced search'),
     'size' => Modal::SIZE_DEFAULT,
-    'footer' => Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary', 'form' => 'search-form-' . $id])
-        . Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-outline-secondary', 'form' => 'search-form-' . $id])
+    'footer' => Yii::$app->controller->uiClass::submitButton(Yii::$app->controller->uiClass::icon('fas fa-search') .' ' . Yii::t('app', 'Search'), ['class' => 'btn btn-primary', 'form' => 'search-form-' . $id])
+        . Yii::$app->controller->uiClass::button(Yii::$app->controller->uiClass::icon('fas fa-times') .' ' . Yii::t('app', 'Cancel'), [
+            'class' => 'btn btn-secondary',
+            'data-dismiss' => 'modal'
+        ])
 ]); ?>
 <?= $this->render('_search', [
     'model' => $searchModel,
