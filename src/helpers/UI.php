@@ -261,7 +261,11 @@ class UI extends \yii\helpers\Html
                     ]
                 ],
                 'containerOptions' => ['class' => 'col-12 col-md-6'],
-                'in' => ['S']
+                'in' => ['S'],
+                'options' => [
+                    'help' => '',
+                    'popover' => Yii::t('app', 'Indicate the record status.')
+                ]
             ],
             [
                 'name' => $model::CREATED_BY_COLUMN,
@@ -278,7 +282,11 @@ class UI extends \yii\helpers\Html
                     ]
                 ],
                 'containerOptions' => ['class' => 'col-12 col-md-6'],
-                'in' => ['S']
+                'in' => ['S'],
+                'options' => [
+                    'help' => '',
+                    'popover' => Yii::t('app', 'User who created the record.')
+                ]
             ],
             [
                 'name' => $model::CREATED_AT_COLUMN,
@@ -286,7 +294,11 @@ class UI extends \yii\helpers\Html
                     'class' => \kartik\date\DatePicker::class
                 ],
                 'containerOptions' => ['class' => 'col-12 col-md-6'],
-                'in' => ['S']
+                'in' => ['S'],
+                'options' => [
+                    'help' => '',
+                    'popover' => Yii::t('app', 'Date on which the record was created.')
+                ]
             ],
             [
                 'name' => $model::UPDATED_BY_COLUMN,
@@ -303,7 +315,11 @@ class UI extends \yii\helpers\Html
                     ]
                 ],
                 'containerOptions' => ['class' => 'col-12 col-md-6'],
-                'in' => ['S']
+                'in' => ['S'],
+                'options' => [
+                    'help' => '',
+                    'popover' => Yii::t('app', 'User who updated the record.')
+                ]
             ],
             [
                 'name' => $model::UPDATED_AT_COLUMN,
@@ -311,7 +327,11 @@ class UI extends \yii\helpers\Html
                     'class' => \kartik\date\DatePicker::class
                 ],
                 'containerOptions' => ['class' => 'col-12 col-md-6'],
-                'in' => ['S']
+                'in' => ['S'],
+                'options' => [
+                    'help' => '',
+                    'popover' => Yii::t('app', 'Date on which the record was updated.')
+                ]
             ]
         ];
     }
