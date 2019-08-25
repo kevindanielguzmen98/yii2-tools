@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.2.4] - 2019-08-24
+### Fixed
+- Corregido error de redirección en acción de actualización
+
 ## [v1.2.3] - 2019-08-24
 ### Changed
 - Cambiada función que retorna las columnas de los formularios
