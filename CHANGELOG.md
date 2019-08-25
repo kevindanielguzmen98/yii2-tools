@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Cambiada función que retorna las columnas de los formularios
 - Modelo base para los usuarios
+- Modificada función para la generación de columnas para la vista de administración
 
 ### Added
 - Añadidos métodos para retornar los datos de un modelo en forma de lista
