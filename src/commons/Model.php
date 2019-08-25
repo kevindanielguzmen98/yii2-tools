@@ -6,6 +6,7 @@ use Yii;
 use kartik\grid\GridView;
 use kevocode\tools\helpers\Configs;
 use app\helpers\ArrayHelper;
+use yii\helpers\Inflector;
 
 /**
  * Extención de funcionalidad para modelo tipo ActiveRecord.
@@ -86,15 +87,38 @@ class Model extends \yii\db\ActiveRecord
      */
     public static function formColumns()
     {
+        $relationshipList = static::getRelationsHasOne();
         $instance = new static;
-        return array_map(function ($value) use ($instance) {
+        return array_map(function ($value) use ($instance, $relationshipList) {
             $auditColumns = [$instance::primaryKey()[0], $instance::STATUS_COLUMN, $instance::CREATED_AT_COLUMN, $instance::CREATED_BY_COLUMN, $instance::UPDATED_AT_COLUMN, $instance::UPDATED_BY_COLUMN];
-            return [
+            $isRelated = array_filter($relationshipList, function ($item) use ($value) {
+                return $item['local_column'] == $value;
+            });
+            $columnConfig = [
                 'name' => $value,
                 'containerOptions' => ['class' => 'col-12 col-md-6'],
                 'in' => (!in_array($value, $auditColumns) ? ['C', 'U', 'S'] : []),
                 'options' => ['help' => '', 'popover' => $instance->getHelp($value)]
             ];
+            if (!empty($isRelated)) {
+                $isRelated = end($isRelated);
+                $className = '\app\models\\' . Inflector::pluralize(Inflector::classify($isRelated['referenced_table']));
+                $columnConfig = array_merge($columnConfig, [
+                    'widget' => [
+                        'class' => \kartik\select2\Select2::class,
+                        [
+                            'data' => $className::getData(),
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                            'options' => [
+                                'placeholder' => Yii::t('app', 'Empty')
+                            ]
+                        ]
+                    ]
+                ]);
+            }
+            return $columnConfig;
         }, $instance->attributes());
     }
 
@@ -111,5 +135,62 @@ class Model extends \yii\db\ActiveRecord
             $helps[$value] = Yii::t('app', ucwords(str_replace('_', ' ', $value)));
         }
         return isset($helps[$columnName]) ? $helps[$columnName] : null;
+    }
+
+    /**
+     * Define el nombre de la columna secundario que será utilizada para identificar el recurso como:
+     * name, lastname, email, etc
+     * 
+     * @return string
+     */
+    public static function secondaryKey()
+    {
+        $primaryKey = static::primaryKey();
+        $othersColumns = array_filter(static::attributes(), function ($item) use ($primaryKey) {
+            return !in_array($item, $primaryKey);
+        });
+        return end($othersColumns);
+    }
+
+    /**
+     * Retorna los datos mapeados en forma de lista
+     * 
+     * @return array
+     */
+    public static function getData()
+    {
+        return ArrayHelper::map(static::findAll([
+            static::STATUS_COLUMN => static::STATUS_ACTIVE
+        ]), static::primaryKey(), static::secondaryKey());
+    }
+
+    /**
+     * Retorna las relaciones uno a muchos que posee la tabla actual
+     * 
+     * @return array
+     */
+    public static function getRelationsHasOne()
+    {
+        $relationshipList = self::getDb()->createCommand("SELECT fk.conname as constraint_name,
+                fk.conrelid::regclass as local_table,
+                a.attname as local_column,
+                fk.confrelid::regclass as referenced_table,
+                af.attname as referenced_column
+            FROM (
+                SELECT
+                    conname,
+                    conrelid,
+                    confrelid,
+                    unnest(conkey)  AS conkey,
+                    unnest(confkey) AS confkey
+                FROM pg_constraint
+                WHERE contype = 'f'
+                ) fk
+            JOIN pg_attribute af ON af.attnum = fk.confkey AND af.attrelid = fk.confrelid
+            JOIN pg_attribute a ON a.attnum = conkey AND a.attrelid = fk.conrelid
+            where fk.conrelid::regclass::text=:table
+            ORDER BY fk.confrelid, fk.conname;
+        ", [':table' => static::tableName()])->queryAll();
+        return $relationshipList;
     }
 }

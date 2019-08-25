@@ -3,6 +3,7 @@
 namespace kevocode\tools\auth\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * User provee todas las funciones necesarias para la autenticación de usuarios y su administración.
@@ -124,5 +125,32 @@ class User extends \mdm\admin\models\User
             $token = Yii::$app->security->generateRandomString(34);
         }
         return $token;
+    }
+
+    /**
+     * Define el nombre de la columna secundario que será utilizada para identificar el recurso como:
+     * name, lastname, email, etc
+     * 
+     * @return string
+     */
+    public static function secondaryKey()
+    {
+        $primaryKey = static::primaryKey();
+        $othersColumns = array_filter(static::attributes(), function ($item) use ($primaryKey) {
+            return !in_array($item, $primaryKey);
+        });
+        return end($othersColumns);
+    }
+
+    /**
+     * Retorna los datos mapeados en forma de lista
+     * 
+     * @return array
+     */
+    public static function getData()
+    {
+        return ArrayHelper::map(static::findAll([
+            static::STATUS_COLUMN => static::STATUS_ACTIVE
+        ]), static::primaryKey(), static::secondaryKey());
     }
 }
