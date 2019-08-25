@@ -73,11 +73,36 @@ class Model extends \yii\db\ActiveRecord
      */
     public static function gridColumns()
     {
+        $relationshipList = static::getRelationsHasOne();
         $instance = new static;
-        return array_filter($instance->attributes(), function ($value) use ($instance) {
+        $columnsConfig = array_filter($instance->attributes(), function ($value) use ($instance) {
             $commonColumns = [$instance::primaryKey()[0], static::STATUS_COLUMN, static::CREATED_AT_COLUMN, static::CREATED_BY_COLUMN, static::UPDATED_AT_COLUMN, static::UPDATED_BY_COLUMN];
             return !in_array($value, $commonColumns);
         });
+        return array_map(function ($value) use ($relationshipList) {
+            $isRelated = array_filter($relationshipList, function ($item) use ($value) {
+                return $item['local_column'] == $value;
+            });
+            if (!empty($isRelated)) {
+                $isRelated = end($isRelated);
+                $className = '\app\models\\' . Inflector::pluralize(Inflector::classify($isRelated['referenced_table']));
+                $value = [
+                    'attribute' => $value,
+                    'filterType' => GridView::FILTER_SELECT2,
+                    'filter' => $className::getData(),
+                    'filterWidgetOptions' => [
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                        'options' => [
+                            'placeholder' => Yii::t('app', 'Empty')
+                        ]
+                    ],
+                    'filterInputOptions' => ['id' => $value.'-gridcolumn']
+                ];
+            }
+            return $value;
+        }, $columnsConfig);
     }
 
     /**
@@ -149,7 +174,7 @@ class Model extends \yii\db\ActiveRecord
         $othersColumns = array_filter(static::attributes(), function ($item) use ($primaryKey) {
             return !in_array($item, $primaryKey);
         });
-        return end($othersColumns);
+        return reset($othersColumns);
     }
 
     /**
