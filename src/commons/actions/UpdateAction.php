@@ -31,7 +31,7 @@ class UpdateAction extends BaseAction
                 'heading' => Yii::t('app', 'Updated'),
                 'text' => Yii::t('app', 'The resource has been updated successfully')
             ]);
-            return $this->redirect(['index']);
+            return $this->controller->redirect(['index']);
         }
         return $this->render('update', [
             'model' => $model,
